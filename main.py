@@ -7,6 +7,7 @@ from sklearn.model_selection import train_test_split
 from transformers import BertModel, BertTokenizer
 import os
 import pandas as pd
+import csv
 
 # Define the Transformer model
 class BeeTransformer(nn.Module):
@@ -56,21 +57,19 @@ class BeeDataset(Dataset):
             'label': torch.tensor(label, dtype=torch.long)
         }
 
-directory_path = "path_to_directory/Concatenated"
+directory_path = "C:/Users/Solal/PycharmProjects/BEE_research/Concatenated"
 
-# List all CSV files in the directory
-csv_files = [file for file in os.listdir(directory_path) if file.endswith('.csv')]
-
-# Initialize an empty list to store the concatenated data
+# Load the concatenated data from the centralized CSV file
+concat_file_path = os.path.join(directory_path, "centralized.csv")
 data = []
+labels = []
 
-# Iterate through the CSV files and concatenate the data
-for file in csv_files:
-    file_path = os.path.join(directory_path, file)
-    df = pd.read_csv(file_path)
-    data.extend(df['data_column_name'])  # Replace 'data_column_name' with the actual column name in your CSV
-
-labels = ['movement1', 'movement1', 'movement2', ...]  # Add your labels for each data sample
+with open(concat_file_path, 'r') as file:
+    reader = csv.reader(file)
+    next(reader)  # Skip the header row
+    for row in reader:
+        data.append(row[4:])  # Modify the index based on the column position of the data in your CSV
+        labels.append(row[0])  # Modify the index based on the column position of the label in your CSV
 
 # Split the data into training and validation sets
 train_data, val_data, train_labels, val_labels = train_test_split(data, labels, test_size=0.2, random_state=42)

@@ -11,18 +11,18 @@ os.makedirs("Concatenated", exist_ok=True)
 all_rows = []
 
 # Iterate through the directories inside the root directory
-for dir_name in os.listdir(root_dir):
-    dir_path = os.path.join(root_dir, dir_name)
+for diet_dir_name in os.listdir(root_dir):
+    diet_dir_path = os.path.join(root_dir, diet_dir_name)
 
-    # Iterate through the subdirectories inside each directory
-    for sub_dir_name in os.listdir(dir_path):
-        sub_dir_path = os.path.join(dir_path, sub_dir_name)
+    # Iterate through the hive directories inside each diet directory
+    for hive_dir_name in os.listdir(diet_dir_path):
+        hive_dir_path = os.path.join(diet_dir_path, hive_dir_name)
 
-        # Iterate through the bee directories
-        for bee_dir_name in os.listdir(sub_dir_path):
-            bee_dir_path = os.path.join(sub_dir_path, bee_dir_name)
+        # Iterate through the bee directories inside each hive directory
+        for bee_dir_name in os.listdir(hive_dir_path):
+            bee_dir_path = os.path.join(hive_dir_path, bee_dir_name)
 
-            # Iterate through the CSV files inside each bee directory
+            # Iterate through the CSV files (iterations) inside each bee directory
             for csv_file_name in os.listdir(bee_dir_path):
                 csv_file_path = os.path.join(bee_dir_path, csv_file_name)
 
@@ -31,38 +31,30 @@ for dir_name in os.listdir(root_dir):
                     reader = csv.reader(file)
                     rows = list(reader)
 
-                # Remove the header row
-                rows = rows[1:]
+                # Extract the diet, hive, bee number, and iteration number
+                diet = diet_dir_name
+                hive = hive_dir_name
+                bee_number = bee_dir_name
+                iteration_number = "iteration " + csv_file_name[-5]  # Add "iteration" before the number
 
-                # Modify the rows to add the desired columns
-                new_row = []
+                # Modify the rows to convert exponential values to float
+                for row in rows:
+                    for i, value in enumerate(row):
+                        try:
+                            row[i] = float(value)
+                        except ValueError:
+                            pass
 
-                for i, row in enumerate(rows):
-                    # Iterate through the values in the row
-                    for j, value in enumerate(row):
-                        # Check if the value is in exponential format
-                        if str.isdigit(value[-1]) and 'E' in value:
-                            # Convert the exponential number to a float
-                            row[j] = float(value)
+                # Append the values from the CSV file to a single row
+                row = [diet, iteration_number, bee_number, hive]
+                row.extend(rows[1:])  # Skip the header row
 
-                    # Extract the type and iteration information
-                    csv_type = dir_name
-                    iteration = "iteration " + csv_file_name[-5]  # Add "iteration" before the number
-
-                    # Get the hive name from the parent directory (bee directory name)
-                    hive = os.path.basename(os.path.dirname(csv_file_path))
-
-                    # Get the directory name of the CSV file
-                    file_dir = os.path.basename(os.path.dirname(bee_dir_path))
-
-                    # Append the values from the current row to the new_row list
-                    new_row.extend(row + [csv_type, iteration, hive, file_dir])
-
-                # Add the modified row to the list of all rows
-                all_rows.append(new_row)
+                # Append the row to the list of all rows
+                all_rows.append(row)
 
 # Write the concatenated rows to the centralized CSV file
-concat_file_path = os.path.join("Concatenated", "concatenated1.1.csv")
+concat_file_path = os.path.join("Concatenated", "centralized.csv")
 with open(concat_file_path, 'w', newline='') as file:
     writer = csv.writer(file)
     writer.writerows(all_rows)
+
