@@ -133,7 +133,7 @@ for epoch in range(num_epochs):
 
     val_loss /= len(val_loader)
 
-    print(f'Epoch {epoch + 1}/{num_epochs}, Loss: {loss:.4f}, Val Loss: {val_loss:.4f}, Accuracy: {correct / len(val_dataset):.4f}')
+    print(f'  Epoch {epoch + 1}/{num_epochs}, Loss: {loss:.4f}, Val Loss: {val_loss:.4f}, Accuracy: {correct / len(val_dataset):.4f}')
 
 # Save the trained model
 model_path = os.path.join(directory_path, "model.pt")
