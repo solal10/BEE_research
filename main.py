@@ -97,7 +97,7 @@ optimizer = optim.AdamW(model.parameters(), lr=1e-5)
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 model.to(device)
 
-num_epochs = 10
+num_epochs = 200
 
 for epoch in range(num_epochs):
     model.train()
@@ -148,8 +148,8 @@ loaded_model.to(device)
 test_input_ids = ...
 test_attention_mask = ...
 with torch.no_grad():
-    test_input_ids = test_input_ids.to(device)
-    test_attention_mask = test_attention_mask.to(device)
+    test_input_ids = torch.tensor(test_input_ids, dtype=torch.long).to(device)
+    test_attention_mask = torch.tensor(test_attention_mask, dtype=torch.long).to(device)
     outputs = loaded_model(test_input_ids, test_attention_mask)
     _, predicted_labels = torch.max(outputs, dim=1)
 
