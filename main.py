@@ -1,12 +1,10 @@
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from torch.utils.data import Dataset, DataLoader
+from torch.utils.data import Dataset, DataLoader, random_split
 from sklearn.preprocessing import LabelEncoder
-from sklearn.model_selection import train_test_split
 from transformers import BertModel, BertTokenizer
 import os
-import pandas as pd
 import csv
 
 # Define the Transformer model
@@ -71,20 +69,19 @@ with open(concat_file_path, 'r') as file:
         data.append(row[4:])  # Modify the index based on the column position of the data in your CSV
         labels.append(row[0])  # Modify the index based on the column position of the label in your CSV
 
-# Split the data into training and validation sets
-train_data, val_data, train_labels, val_labels = train_test_split(data, labels, test_size=0.2, random_state=42)
-
 # Initialize the label encoder
 label_encoder = LabelEncoder()
-train_labels_encoded = label_encoder.fit_transform(train_labels)
-val_labels_encoded = label_encoder.transform(val_labels)
+labels_encoded = label_encoder.fit_transform(labels)
 
 # Initialize the tokenizer
 tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
 
-# Create the datasets and data loaders
-train_dataset = BeeDataset(train_data, train_labels_encoded, tokenizer)
-val_dataset = BeeDataset(val_data, val_labels_encoded, tokenizer)
+# Create the dataset
+dataset = BeeDataset(data, labels_encoded, tokenizer)
+
+# Split the dataset into training and validation sets
+val_size = int(len(dataset) * 0.2)
+train_dataset, val_dataset = random_split(dataset, [len(dataset) - val_size, val_size])
 
 train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
 val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False)
@@ -137,3 +134,24 @@ for epoch in range(num_epochs):
     val_loss /= len(val_loader)
 
     print(f'Epoch {epoch + 1}/{num_epochs}, Loss: {loss:.4f}, Val Loss: {val_loss:.4f}, Accuracy: {correct / len(val_dataset):.4f}')
+
+# Save the trained model
+model_path = os.path.join(directory_path, "model.pt")
+torch.save(model.state_dict(), model_path)
+
+# Load the saved model
+loaded_model = BeeTransformer(num_classes=len(label_encoder.classes_))
+loaded_model.load_state_dict(torch.load(model_path))
+loaded_model.to(device)
+
+# Inference with the loaded model
+test_input_ids = ...
+test_attention_mask = ...
+with torch.no_grad():
+    test_input_ids = test_input_ids.to(device)
+    test_attention_mask = test_attention_mask.to(device)
+    outputs = loaded_model(test_input_ids, test_attention_mask)
+    _, predicted_labels = torch.max(outputs, dim=1)
+
+# Decode predicted labels
+predicted_labels = label_encoder.inverse_transform(predicted_labels.cpu().numpy())
