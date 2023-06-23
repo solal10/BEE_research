@@ -66,7 +66,7 @@ with open(concat_file_path, 'r') as file:
     reader = csv.reader(file)
     next(reader)  # Skip the header row
     for row in reader:
-        data.append(row[3])  # Modify the index based on the column position of the data in your CSV
+        data.append(row[2])  # Modify the index based on the column position of the data in your CSV
         labels.append(row[0])  # Modify the index based on the column position of the label in your CSV
 
 # Initialize the label encoder
