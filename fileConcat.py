@@ -7,8 +7,8 @@ root_dir = "CSV"
 # Create a new directory to store the centralized CSV file
 os.makedirs("Concatenated", exist_ok=True)
 
-# Create a list to store the rows from all CSV files
-all_rows = []
+# Maximum cell size limit
+max_cell_size = 32767
 
 # Iterate through the directories inside the root directory
 for diet_dir_name in os.listdir(root_dir):
@@ -45,16 +45,37 @@ for diet_dir_name in os.listdir(root_dir):
                         except ValueError:
                             pass
 
-                # Append the values from the CSV file to a single row
-                row = [diet, iteration_number, bee_number, hive]
-                row.extend(rows[1:])  # Skip the header row
+                # Join the values within square brackets while preserving the brackets
+                joined_rows = []
+                for row in rows[1:]:
+                    joined_row = "[" + ",".join(map(str, row)) + "]"
+                    joined_rows.append(joined_row)
 
-                # Append the row to the list of all rows
-                all_rows.append(row)
+                # Split the joined rows into multiple cells if it exceeds the maximum cell size
+                num_cells = len(joined_rows)
+                if num_cells > 1:
+                    split_rows = []
+                    current_cell_size = 0
+                    current_row = ""
+                    for row in joined_rows:
+                        row_size = len(row)
+                        if current_cell_size + row_size <= max_cell_size:
+                            current_row += row
+                            current_cell_size += row_size
+                        else:
+                            split_rows.append(current_row)
+                            current_row = row
+                            current_cell_size = row_size
+                    split_rows.append(current_row)
 
-# Write the concatenated rows to the centralized CSV file
-concat_file_path = os.path.join("Concatenated", "centralized.csv")
-with open(concat_file_path, 'w', newline='') as file:
-    writer = csv.writer(file)
-    writer.writerows(all_rows)
+                    # Append the values from the CSV file to the row
+                    row = [diet, iteration_number, bee_number, hive] + split_rows
+                else:
+                    # Append the values from the CSV file to the row
+                    row = [diet, iteration_number, bee_number, hive, joined_rows[0]]
 
+                # Write the row to the centralized CSV file
+                concat_file_path = os.path.join("Concatenated", "centralized.csv")
+                with open(concat_file_path, 'a', newline='') as file:
+                    writer = csv.writer(file)
+                    writer.writerow(row)
