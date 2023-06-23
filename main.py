@@ -55,7 +55,7 @@ class BeeDataset(Dataset):
             'label': torch.tensor(label, dtype=torch.long)
         }
 
-directory_path = "C:/Users/Solal/PycharmProjects/BEE_research/Concatenated"
+directory_path = "/home/ashdod-ai1/BEE_research/Concatenated"
 
 # Load the concatenated data from the centralized CSV file
 concat_file_path = os.path.join(directory_path, "centralized.csv")
