@@ -6,6 +6,8 @@ from sklearn.preprocessing import LabelEncoder
 from transformers import BertModel, BertTokenizer
 import os
 import csv
+import numpy as np
+from sklearn.metrics import confusion_matrix
 
 # Define the Transformer model
 class BeeTransformer(nn.Module):
@@ -135,23 +137,25 @@ for epoch in range(num_epochs):
 
     print(f'  Epoch {epoch + 1}/{num_epochs}, Loss: {loss:.4f}, Val Loss: {val_loss:.4f}, Accuracy: {correct / len(val_dataset):.4f}')
 
-# Save the trained model
-model_path = os.path.join(directory_path, "model.pt")
-torch.save(model.state_dict(), model_path)
+# Calculate the confusion matrix
+all_predicted_labels = []
+all_true_labels = []
 
-# Load the saved model
-loaded_model = BeeTransformer(num_classes=len(label_encoder.classes_))
-loaded_model.load_state_dict(torch.load(model_path))
-loaded_model.to(device)
-
-# Inference with the loaded model
-test_input_ids = ...
-test_attention_mask = ...
 with torch.no_grad():
-    test_input_ids = torch.tensor(test_input_ids, dtype=torch.long).to(device)
-    test_attention_mask = torch.tensor(test_attention_mask, dtype=torch.long).to(device)
-    outputs = loaded_model(test_input_ids, test_attention_mask)
-    _, predicted_labels = torch.max(outputs, dim=1)
+    for batch in val_loader:
+        input_ids = batch['input_ids'].to(device)
+        attention_mask = batch['attention_mask'].to(device)
+        labels = batch['label'].to(device)
 
-# Decode predicted labels
-predicted_labels = label_encoder.inverse_transform(predicted_labels.cpu().numpy())
+        outputs = model(input_ids, attention_mask)
+
+        _, predicted = torch.max(outputs, dim=1)
+
+        all_predicted_labels.extend(predicted.tolist())
+        all_true_labels.extend(labels.tolist())
+
+confusion = confusion_matrix(all_true_labels, all_predicted_labels)
+
+# Print the confusion matrix
+print('Confusion Matrix:')
+print(confusion)
