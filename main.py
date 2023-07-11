@@ -82,7 +82,6 @@ with open(concat_file_path, 'r') as file:
                 data.append(row[4])  # Modify the index based on the column position of the data in your CSV
                 labels.append(row[1])  # Modify the index based on the column position of the label in your CSV
 
-print(labels)
 
 # Initialize the label encoder
 label_encoder = LabelEncoder()
@@ -112,7 +111,7 @@ optimizer = optim.AdamW(model.parameters(), lr=1e-5)
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 model.to(device)
 
-num_epochs = 1
+num_epochs = 200
 
 for epoch in range(num_epochs):
     model.train()
