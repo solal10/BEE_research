@@ -60,7 +60,7 @@ class BeeDataset(Dataset):
         }
 
 # Define the training parameters
-num_epochs = 2
+num_epochs = 200
 batch_size = 32
 learning_rate = 1e-5
 max_norm = 1.0
