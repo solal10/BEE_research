@@ -8,6 +8,8 @@ import os
 import csv
 import numpy as np
 from sklearn.metrics import confusion_matrix
+from torch.optim.lr_scheduler import StepLR
+from torch.nn.utils import clip_grad_norm_
 
 # Define the Transformer model
 class BeeTransformer(nn.Module):
@@ -57,6 +59,11 @@ class BeeDataset(Dataset):
             'label': torch.tensor(label, dtype=torch.long)
         }
 
+# Define the training parameters
+num_epochs = 2
+batch_size = 32
+learning_rate = 1e-5
+max_norm = 1.0
 directory_path = "/home/ashdod-ai1/BEE_research/Concatenated"
 
 # Load the concatenated data from the centralized CSV file
@@ -82,7 +89,6 @@ with open(concat_file_path, 'r') as file:
                 data.append(row[4])  # Modify the index based on the column position of the data in your CSV
                 labels.append(row[1])  # Modify the index based on the column position of the label in your CSV
 
-
 # Initialize the label encoder
 label_encoder = LabelEncoder()
 labels_encoded = label_encoder.fit_transform(labels)
@@ -97,22 +103,30 @@ dataset = BeeDataset(data, labels_encoded, tokenizer)
 val_size = int(len(dataset) * 0.2)
 train_dataset, val_dataset = random_split(dataset, [len(dataset) - val_size, val_size])
 
-train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
-val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False)
+train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
+val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
 
 # Initialize the model
 model = BeeTransformer(num_classes=len(label_encoder.classes_))
 
-# Define the loss function and optimizer
-criterion = nn.CrossEntropyLoss()
-optimizer = optim.AdamW(model.parameters(), lr=1e-5)
-
-# Training loop
+# Move the model to the device
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 model.to(device)
 
-num_epochs = 5
+# Define the loss function and optimizer
+criterion = nn.CrossEntropyLoss()
+optimizer = optim.AdamW(model.parameters(), lr=learning_rate)
 
+# Define the learning rate scheduler
+scheduler = StepLR(optimizer, step_size=5, gamma=0.1)
+
+# Add early stopping variables
+best_val_loss = float('inf')
+patience = 10
+counter = 0
+best_model_state_dict = model.state_dict()
+
+# Training loop
 for epoch in range(num_epochs):
     model.train()
 
@@ -126,6 +140,7 @@ for epoch in range(num_epochs):
         outputs = model(input_ids, attention_mask)
         loss = criterion(outputs, labels)
         loss.backward()
+        clip_grad_norm_(model.parameters(), max_norm)  # Gradient clipping
         optimizer.step()
 
     # Validation loop
@@ -147,7 +162,23 @@ for epoch in range(num_epochs):
 
     val_loss /= len(val_loader)
 
-    print(f'Epoch {epoch + 1}/{num_epochs}, Loss: {loss:.4f}, Val Loss: {val_loss:.4f}, Accuracy: {correct / len(val_dataset):.4f}')
+    if val_loss < best_val_loss:
+        best_val_loss = val_loss
+        counter = 0
+        best_model_state_dict = model.state_dict()
+    else:
+        counter += 1
+
+    if counter >= patience:
+        print("Early stopping!")
+        break
+
+    scheduler.step()
+
+    print(f'  Epoch {epoch + 1}/{num_epochs}, Loss: {loss:.4f}, Val Loss: {val_loss:.4f}, Accuracy: {correct / len(val_dataset):.4f}')
+
+# Load the best model state dict
+model.load_state_dict(best_model_state_dict)
 
 # Calculate the confusion matrix
 all_predicted_labels = []
@@ -171,6 +202,7 @@ confusion = confusion_matrix(all_true_labels, all_predicted_labels)
 # Print the confusion matrix
 print('Confusion Matrix:')
 print(confusion)
+
 
 # Extract true positives, true negatives, false positives, false negatives
 tn, fp, fn, tp = confusion.ravel()
