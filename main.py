@@ -69,8 +69,20 @@ with open(concat_file_path, 'r') as file:
     next(reader)  # Skip the header row
     for row in reader:
         if row[1] != 'iteration 3' and row[1] != 'iteration 4' and row[1] != 'iteration 5' and row[1] != 'iteration 6':
-            data.append(row[4])  # Modify the index based on the column position of the data in your CSV
-            labels.append(row[1])  # Modify the index based on the column position of the label in your CSV
+            tmp = 0
+            if row[1] == 'iteration 2':
+                tmp = 'iteration 1'
+                data.append(row[4])  # Modify the index based on the column position of the data in your CSV
+                labels.append(tmp)  # Modify the index based on the column position of the label in your CSV
+            elif row[1] == 'iteration 7':
+                tmp = 'iteration 8'
+                data.append(row[4])  # Modify the index based on the column position of the data in your CSV
+                labels.append(tmp)  # Modify the index based on the column position of the label in your CSV
+            else:
+                data.append(row[4])  # Modify the index based on the column position of the data in your CSV
+                labels.append(row[1])  # Modify the index based on the column position of the label in your CSV
+
+print(labels)
 
 # Initialize the label encoder
 label_encoder = LabelEncoder()
@@ -100,7 +112,7 @@ optimizer = optim.AdamW(model.parameters(), lr=1e-5)
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 model.to(device)
 
-num_epochs = 200
+num_epochs = 1
 
 for epoch in range(num_epochs):
     model.train()
