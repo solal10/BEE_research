@@ -68,8 +68,20 @@ with open(concat_file_path, 'r') as file:
     reader = csv.reader(file)
     next(reader)  # Skip the header row
     for row in reader:
-        data.append(row[4])  # Modify the index based on the column position of the data in your CSV
-        labels.append(row[1])  # Modify the index based on the column position of the label in your CSV
+        if row[1] != 'iteration 3' and row[1] != 'iteration 4' and row[1] != 'iteration 5' and row[1] != 'iteration 6':
+            tmp = 0
+            if row[1] == 'iteration 2':
+                tmp = 'iteration 1'
+                data.append(row[4])  # Modify the index based on the column position of the data in your CSV
+                labels.append(tmp)  # Modify the index based on the column position of the label in your CSV
+            elif row[1] == 'iteration 7':
+                tmp = 'iteration 8'
+                data.append(row[4])  # Modify the index based on the column position of the data in your CSV
+                labels.append(tmp)  # Modify the index based on the column position of the label in your CSV
+            else:
+                data.append(row[4])  # Modify the index based on the column position of the data in your CSV
+                labels.append(row[1])  # Modify the index based on the column position of the label in your CSV
+
 
 # Initialize the label encoder
 label_encoder = LabelEncoder()
@@ -99,7 +111,7 @@ optimizer = optim.AdamW(model.parameters(), lr=1e-5)
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 model.to(device)
 
-num_epochs = 100
+num_epochs = 200
 
 for epoch in range(num_epochs):
     model.train()
@@ -135,7 +147,7 @@ for epoch in range(num_epochs):
 
     val_loss /= len(val_loader)
 
-    print(f'  Epoch {epoch + 1}/{num_epochs}, Loss: {loss:.4f}, Val Loss: {val_loss:.4f}, Accuracy: {correct / len(val_dataset):.4f}')
+    print(f'Epoch {epoch + 1}/{num_epochs}, Loss: {loss:.4f}, Val Loss: {val_loss:.4f}, Accuracy: {correct / len(val_dataset):.4f}')
 
 # Calculate the confusion matrix
 all_predicted_labels = []
@@ -159,3 +171,12 @@ confusion = confusion_matrix(all_true_labels, all_predicted_labels)
 # Print the confusion matrix
 print('Confusion Matrix:')
 print(confusion)
+
+# Extract true positives, true negatives, false positives, false negatives
+tn, fp, fn, tp = confusion.ravel()
+
+# Print true positives, true negatives, false positives, false negatives
+print('True Positives:', tp)
+print('True Negatives:', tn)
+print('False Positives:', fp)
+print('False Negatives:', fn)
