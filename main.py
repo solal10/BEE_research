@@ -111,7 +111,7 @@ optimizer = optim.AdamW(model.parameters(), lr=1e-5)
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 model.to(device)
 
-num_epochs = 200
+num_epochs = 5
 
 for epoch in range(num_epochs):
     model.train()
@@ -147,7 +147,7 @@ for epoch in range(num_epochs):
 
     val_loss /= len(val_loader)
 
-    print(f'  Epoch {epoch + 1}/{num_epochs}, Loss: {loss:.4f}, Val Loss: {val_loss:.4f}, Accuracy: {correct / len(val_dataset):.4f}')
+    print(f'Epoch {epoch + 1}/{num_epochs}, Loss: {loss:.4f}, Val Loss: {val_loss:.4f}, Accuracy: {correct / len(val_dataset):.4f}')
 
 # Calculate the confusion matrix
 all_predicted_labels = []
@@ -171,3 +171,12 @@ confusion = confusion_matrix(all_true_labels, all_predicted_labels)
 # Print the confusion matrix
 print('Confusion Matrix:')
 print(confusion)
+
+# Extract true positives, true negatives, false positives, false negatives
+tn, fp, fn, tp = confusion.ravel()
+
+# Print true positives, true negatives, false positives, false negatives
+print('True Positives:', tp)
+print('True Negatives:', tn)
+print('False Positives:', fp)
+print('False Negatives:', fn)
