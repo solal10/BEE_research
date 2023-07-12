@@ -88,7 +88,7 @@ with open(concat_file_path, 'r') as file:
         data.append(row[3])  # Modify the index based on the column position of the label in your CSV
         data.append(row[4])  # Modify the index based on the column position of the label in your CSV
         labels.append(row[0])  # Modify the index based on the column position of the label in your CSV
-
+print(data)
 
 # Initialize the label encoder
 label_encoder = LabelEncoder()
