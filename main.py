@@ -67,24 +67,10 @@ labels = []
 with open(concat_file_path, 'r') as file:
     reader = csv.reader(file)
     next(reader)  # Skip the header row
-    # for row in reader:
-    #     if row[1] != 'iteration 3' and row[1] != 'iteration 4' and row[1] != 'iteration 5' and row[1] != 'iteration 6':
-    #         tmp = 0
-    #         if row[1] == 'iteration 2':
-    #             tmp = 'iteration 1'
-    #             data.append(row[4])  # Modify the index based on the column position of the data in your CSV
-    #             labels.append(tmp)  # Modify the index based on the column position of the label in your CSV
-    #         elif row[1] == 'iteration 7':
-    #             tmp = 'iteration 8'
-    #             data.append(row[4])  # Modify the index based on the column position of the data in your CSV
-    #             labels.append(tmp)  # Modify the index based on the column position of the label in your CSV
-    #         else:
-    #             data.append(row[4])  # Modify the index based on the column position of the data in your CSV
-    #             labels.append(row[1])  # Modify the index based on the column position of the label in your CSV
-
     for row in reader:
-        data.append(row[4])  # Modify the index based on the column position of the data in your CSV
-        labels.append(row[1])  # Modify the index based on the column position of the label in your CSV
+        if row[1] != 'iteration 3' and row[1] != 'iteration 4' and row[1] != 'iteration 5' and row[1] != 'iteration 6':
+                data.append(row[4])  # Modify the index based on the column position of the data in your CSV
+                labels.append(row[1])  # Modify the index based on the column position of the label in your CSV
 
 # Initialize the label encoder
 label_encoder = LabelEncoder()
