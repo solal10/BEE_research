@@ -3,21 +3,13 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # Example confusion matrix
-confusion_matrix = np.array([[1, 1, 4, 0, 0, 1, 2, 0, 0, 0, 0, 0],
- [0, 0, 0, 2, 2, 0, 1, 3, 1, 0, 0, 0],
- [1, 1, 1, 2, 2, 0, 0, 0, 2, 0, 0, 0],
- [1, 0, 1, 0, 1, 2, 0, 1, 2, 0, 0, 0],
- [1, 1, 1, 3, 3, 0, 0, 1, 0, 0, 0, 0],
- [0, 0, 3, 2, 1, 0, 0, 1, 2, 0, 0, 0],
- [0, 0, 1, 1, 0, 0, 3, 0, 2, 0, 0, 0],
- [0, 0, 0, 1, 0, 0, 1, 2, 3, 0, 0, 0],
- [1, 0, 2, 2, 2, 0 ,1, 1, 1, 0, 0, 0],
- [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3, 2],
- [0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 5, 4],
- [0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 9, 4]])
+confusion_matrix = np.array([[1, 5, 2, 2],
+ [5, 2, 2, 6],
+ [5, 3, 6, 3],
+ [1, 6, 3, 4]])
 
 # Define class labels
-class_labels = ['Hive 2','Hive 5','Hive 8', 'Hive 1', 'Hive 4', 'Hive 7', 'Hive 3', 'Hive 6', 'Hive 9', 'Hive 11', 'Hive 10', 'Hive 12']
+class_labels = ['Iteration 1', 'Iteration 2', 'Iteration 7', 'Iteration 8']
 
 # Normalize the confusion matrix
 normalized_matrix = confusion_matrix.astype('float') / confusion_matrix.sum(axis=1)[:, np.newaxis]
