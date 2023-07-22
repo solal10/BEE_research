@@ -68,11 +68,11 @@ with open(concat_file_path, 'r') as file:
     reader = csv.reader(file)
     next(reader)  # Skip the header row
     for row in reader:
-        if row[1] != 'iteration 3' and row[1] != 'iteration 4' and row[1] != 'iteration 5' and row[1] != 'iteration 6':
+        if row[1] != 'iteration 3' and row[1] != 'iteration 4' and row[1] != 'iteration 5' and row[1] != 'iteration 6' and row[1] != 'iteration 1' and row[1] != 'iteration 2' :
             if row[0]=='diet 1.1':
                 data.append(row[4])  # Modify the index based on the column position of the data in your CSV
-                labels.append('pollen')  # Modify the index based on the column position of the label in your CSV
-            else:
+                labels.append(row[0])  # Modify the index based on the column position of the label in your CSV
+            if row[0]=='diet 5.1':
                 data.append(row[4])
                 labels.append(row[0])
 
