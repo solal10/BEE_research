@@ -76,6 +76,9 @@ with open(concat_file_path, 'r') as file:
                 data.append(row[4])
                 labels.append(row[0])
 
+print(data)
+print(labels)
+
 # Initialize the label encoder
 label_encoder = LabelEncoder()
 labels_encoded = label_encoder.fit_transform(labels)
