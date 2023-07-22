@@ -78,7 +78,7 @@ with open(concat_file_path, 'r') as file:
 
 print(data)
 print(labels)
-
+print(len(dataset))
 # Initialize the label encoder
 label_encoder = LabelEncoder()
 labels_encoded = label_encoder.fit_transform(labels)
@@ -92,6 +92,9 @@ dataset = BeeDataset(data, labels_encoded, tokenizer)
 # Split the dataset into training and validation sets
 val_size = int(len(dataset) * 0.2)
 train_dataset, val_dataset = random_split(dataset, [len(dataset) - val_size, val_size])
+
+print(len(dataset))
+print(val_size)
 
 train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
 val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False)
