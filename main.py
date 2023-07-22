@@ -78,7 +78,7 @@ with open(concat_file_path, 'r') as file:
 
 print(data)
 print(labels)
-print(len(dataset))
+
 # Initialize the label encoder
 label_encoder = LabelEncoder()
 labels_encoded = label_encoder.fit_transform(labels)
