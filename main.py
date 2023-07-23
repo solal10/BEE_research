@@ -68,15 +68,14 @@ with open(concat_file_path, 'r') as file:
     reader = csv.reader(file)
     next(reader)  # Skip the header row
     for row in reader:
-        if row[1] != 'iteration 3' and row[1] != 'iteration 4' and row[1] != 'iteration 5' and row[1] != 'iteration 6' and row[1] != 'iteration 1' and row[1] != 'iteration 2' :
-            if row[0]=='diet 1.1':
+        if row[1] != 'iteration 3' and row[1] != 'iteration 4' and row[1] != 'iteration 5' and row[1] != 'iteration 6':
+            if row[0] == 'diet 5.1':
                 data.append(row[4])  # Modify the index based on the column position of the data in your CSV
-                labels.append(row[0])  # Modify the index based on the column position of the label in your CSV
-            if row[0]=='diet 5.1':
+                labels.append('diet 1.1')  # Modify the index based on the column position of the label in your CSV
+            else:
                 data.append(row[4])
                 labels.append(row[0])
 
-print(data)
 print(labels)
 
 # Initialize the label encoder
@@ -92,9 +91,6 @@ dataset = BeeDataset(data, labels_encoded, tokenizer)
 # Split the dataset into training and validation sets
 val_size = int(len(dataset) * 0.2)
 train_dataset, val_dataset = random_split(dataset, [len(dataset) - val_size, val_size])
-
-print(len(dataset))
-print(val_size)
 
 train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
 val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False)
