@@ -12,6 +12,7 @@ from sklearn.metrics import confusion_matrix
 
 maxacc=[]
 for i in range(30):
+    print(f'ITERATION IS {i}')
     # Define the Transformer model
     currentacc=0
     class BeeTransformer(nn.Module):
@@ -143,6 +144,7 @@ for i in range(30):
                 correct += (predicted == labels).sum().item()
 
         val_loss /= len(val_loader)
+        print(f'Epoch {epoch + 1}/{num_epochs}, Loss: {loss:.4f}, Val Loss: {val_loss:.4f}, Accuracy: {correct / len(val_dataset):.4f}')
         if currentacc<(correct / len(val_dataset)):
             currentacc = (correct / len(val_dataset))
     maxacc.append(currentacc)
