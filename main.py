@@ -11,7 +11,7 @@ import numpy as np
 from sklearn.metrics import confusion_matrix
 
 maxacc=[]
-for i in range(30):
+for i in range(20):
     print(f'ITERATION IS {i}')
     # Define the Transformer model
     currentacc=0
@@ -73,7 +73,7 @@ for i in range(30):
         reader = csv.reader(file)
         next(reader)  # Skip the header row
         for row in reader:
-            if row[1] != 'iteration 3' and row[1] != 'iteration 4' and row[1] != 'iteration 5' and row[1] != 'iteration 6' and row[1] != 'iteration 1' and row[1] != 'iteration 2' :
+            if row[1] != 'iteration 3' and row[1] != 'iteration 4' and row[1] != 'iteration 5' and row[1] != 'iteration 6' and row[1] != 'iteration 7' and row[1] != 'iteration 8' :
                 if row[0]=='diet 1.1':
                     data.append(row[4])  # Modify the index based on the column position of the data in your CSV
                     labels.append('pollen')  # Modify the index based on the column position of the label in your CSV
@@ -109,7 +109,7 @@ for i in range(30):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model.to(device)
 
-    num_epochs = 200
+    num_epochs = 100
 
     for epoch in range(num_epochs):
         model.train()
