@@ -77,7 +77,7 @@ for i in range(20):
 
                 data.append(row[4])  # Modify the index based on the column position of the data in your CSV
                 labels.append(row[0])  # Modify the index based on the column position of the label in your CSV
-                print(row[1])
+
     # Initialize the label encoder
     label_encoder = LabelEncoder()
     labels_encoded = label_encoder.fit_transform(labels)
