@@ -73,7 +73,7 @@ for i in range(20):
         reader = csv.reader(file)
         next(reader)  # Skip the header row
         for row in reader:
-            if row[1] != 'iteration 4' and row[1] != 'iteration 5' and row[1] != 'iteration 6' and row[1] != 'iteration 7' and row[1] != 'iteration 8' and row[0] != 'pollen':
+            if row[1] != 'iteration 4' and row[1] != 'iteration 5' and row[1] != 'iteration 6' and row[1] != 'iteration 7' and row[1] != 'iteration 8' and row[0] != 'pollen' and row[1] != 'iteration 3':
 
                 data.append(row[4])  # Modify the index based on the column position of the data in your CSV
                 labels.append(row[0])  # Modify the index based on the column position of the label in your CSV
