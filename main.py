@@ -76,9 +76,9 @@ for i in range(20):
             if row[1] != 'iteration 1' and row[1] != 'iteration 2' and row[1] != 'iteration 3' and row[1] != 'iteration 4':
 
                 if row[0] == 'pollen':
-                    labels.append('diet 1.1 ' + row[1])
+                    labels.append('diet 1.1 ')
                 else:
-                    labels.append(row[0] + ' ' + row[1])
+                    labels.append(row[0])
                 data.append(row[4])
 
     print(labels)
