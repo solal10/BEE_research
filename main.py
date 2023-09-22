@@ -73,9 +73,10 @@ for i in range(20):
         reader = csv.reader(file)
         next(reader)  # Skip the header row
         for row in reader:
-            if row[1] != 'iteration 1' and row[1] != 'iteration 2' and row[1] != 'iteration 3' and row[1] != 'iteration 4':
-                labels.append(row[0] + ' ' + row[1])
-                data.append(row[4])
+            if row[1] != 'iteration 4' and row[1] != 'iteration 5' and row[1] != 'iteration 6' and row[1] != 'iteration 7' and row[1] != 'iteration 8':
+                if row[0] != '5.1':
+                    labels.append(row[0])
+                    data.append(row[4])
 
     print(labels)
 
